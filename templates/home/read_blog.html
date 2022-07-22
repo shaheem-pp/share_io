@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+{% load blog_extras %}
+{#{% load markdown_deux_tags %}#}
+{% block content %}
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand pl-2">Shareio <i class="fa fa-arrow-up-from-bracket"></i> </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item p-3 m-1">
+                    <a class="nav-link" href="/"><i class="fa fa-home"></i> Home</a>
+                </li>
+                <li class="nav-item p-3 m-1">
+                    <a class="nav-link" href="/user/"><i class="fa fa-user"></i> Your Profile</a>
+                </li>
+                <li class="nav-item p-3 m-1">
+                    <a class="nav-link" href="/user/signout/"><i class="fa fa-power-off"></i> Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+
+        <h1 class="mt-5">{{ blog.title }}</h1>
+
+        <div class="container my-5">
+            <div class="blog-design">
+                <img src="{{ blog.image }}" alt="" class="image-size">
+                <p class="mt-2">{{ blog.description | convert_markdown|safe }}</p>
+
+                <br>
+                <form action="{% url 'like_post' blog.pk %}" method="post">
+                    {% csrf_token %}
+                    {% if is_liked == True %}
+                        <button class="btn btn-pink btn-sm" type="submit" name="post_id" value="{{ blog.id }}"><i
+                                class="fa fa-thumbs-down"></i> unlike
+                        </button>&emsp; You & {{ blog_likes }} Others liked this Blog
+                    {% else %}
+                        <button class="btn btn-pink btn-sm" type="submit" name="post_id" value="{{ blog.id }}"><i
+                                class="fa fa-thumbs-up"></i> like
+                        </button>&emsp; {{ blog_likes }} liked this Blog
+                    {% endif %}
+                </form>
+
+                <br>
+                <hr>
+                <p><small class="text-muted">Created by {{ blog.name }} on {{ blog.date }}</small></p>
+                {#                <a href="/liked/{{ blog.id }}" class="btn btn-pink"><i class="fa fa-thumbs-up"></i>#}
+                {#                    {{ blog.likes }}</a>#}
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand pl-2">Shareio <i class="fa fa-arrow-up-from-bracket"></i> </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item p-3 m-1">
+                    <a class="nav-link" href="/"><i class="fa fa-cancel"></i> Cancel</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <h1 class="text-center my-5">Edit Blog</h1>
+        <form method="post" action="/edit_blog/{{ blog.id }}" class="w-100">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" maxlength="100" id="title" name="title" value="{{ blog.title }}">
+            </div>
+            <div class="form-group">
+                <label for="short">About the Blog</label>
+                <textarea class="form-control" id="short" aria-describedby="short"
+                          name="short" maxlength="350" rows="3">{{ blog.short }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="blogcontent">Write your Blog here</label>
+                <textarea class="form-control" id="blogcontent" aria-describedby="blogcontent"
+                          name="blogcontent" maxlength="10000" rows="10">{{ blog.description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="imagelink">Image Link</label>
+                <input type="url" class="form-control" id="imagelink" name="imagelink" value="{{ blog.image }}">
+            </div>
+            <button type="submit" class="btn btn-pink btn-block my-5">Submit</button>
+        </form>
+
+    </div>
+
+{% endblock %}
