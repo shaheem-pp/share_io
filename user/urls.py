@@ -18,11 +18,11 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('', views.profile, name="user index"),
-    # path('profile/<int:id>', views.profile, name="user index"),
-    path('login/', views.login, name="login"),
-    path('signup/', views.signup, name="signup"),
-    path('signout/', views.signout, name="signout"),
-    path('change_password/<int:id>', views.change_password, name="user settings"),
+        path('', views.profile, name = "user index"),
+        # path('profile/<int:id>', views.profile, name="user index"),
+        path('login/', views.login, name = "login"),
+        path('signup/', views.signup, name = "signup"),
+        path('signout/', views.signout, name = "signout"),
+        path('change_password/<int:id>', views.change_password, name = "user settings"),
 
 ]

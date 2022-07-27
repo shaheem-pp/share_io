@@ -4,18 +4,17 @@ from django.contrib import auth, messages
 from home.models import *
 
 
-
 # Create your views here.
 @login_required
 def profile(request):
     if request.method == 'GET':
         userid = request.user.id
-        data = User.objects.get(id=userid)
-        blogObj = Blog.objects.filter(userid=userid).order_by('-id')
+        data = User.objects.get(id = userid)
+        blogObj = Blog.objects.filter(userid = userid).order_by('-id')
         context = {
-            "title": "Shareio | Home",
-            "data": data,
-            "blogs": blogObj
+                "title": "Shareio | Home",
+                "data": data,
+                "blogs": blogObj
         }
         return render(request, "user/profile.html", context)
 
@@ -25,13 +24,13 @@ def login(request):
         return redirect('/')
     if request.method == "GET":
         context = {
-            "title": "Shareio | Login"
+                "title": "Shareio | Login"
         }
         return render(request, "user/login.html", context)
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['pass']
-        user = auth.authenticate(request, username=username, password=password)
+        user = auth.authenticate(request, username = username, password = password)
         if user is not None:
             request.session['username'] = username
             auth.login(request, user)
@@ -46,15 +45,15 @@ def signup(request):
         return redirect('/')
     if request.method == "GET":
         context = {
-            "title": "Shareio | Signup"
+                "title": "Shareio | Signup"
         }
         return render(request, "user/signup.html", context)
     if request.method == "POST":
         user = User.objects.create_user(
-            first_name=request.POST.get('fullname'),
-            username=request.POST.get('username'),
-            email=request.POST.get('email'),
-            password=request.POST.get('password1'))
+                first_name = request.POST.get('fullname'),
+                username = request.POST.get('username'),
+                email = request.POST.get('email'),
+                password = request.POST.get('password1'))
         user.save()
         messages.success(request, 'User Created!')
         return redirect('/user/login')
@@ -71,7 +70,7 @@ def signout(request):
 @login_required
 def change_password(request, id):
     if request.method == "POST":
-        data = User.objects.get(id=id)
+        data = User.objects.get(id = id)
         if data.check_password(request.POST.get('currentPass')):
             data.set_password(request.POST.get('newPass'))
             data.save()
