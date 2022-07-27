@@ -106,5 +106,6 @@ def search(request):
     if request.POST.get('keyword') == "":
         return redirect('login')
     else:
-        blogs = Blog.objects.filter(title__contains=request.POST.get('keyword'))
+        blogs = Blog.objects.filter(description__contains=request.POST.get('keyword')) or \
+                Blog.objects.filter(title__contains=request.POST.get('keyword'))
         return render(request, "home/index.html", {"blogs": blogs})
