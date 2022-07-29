@@ -1,8 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.postgres.search import SearchVector
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy, reverse
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 from home.models import *
 import datetime
 from django.contrib.postgres.search import SearchVector
@@ -15,7 +12,6 @@ def index(request):
     profile = User.objects.get(username = user)
     if request.method == "GET":
         data = request.user.id
-        # user = request.user
         blogs = Blog.objects.all().order_by('-date')
         title = {
                 "title": "Shareio | Home",
@@ -73,19 +69,6 @@ def like_unlike_post(request):
     return redirect('home:index')
 
 
-# @login_required
-# def liked(request, pk):
-#     post = get_object_or_404(Blog, id = request.POST.get('post_id'))
-#     liked = False
-#     if post.likes.filter(id = request.user.id).exists():
-#         post.likes.remove(request.user)
-#         liked = False
-#     else:
-#         post.likes.add(request.user)
-#         liked = True
-#     return HttpResponseRedirect(reverse('read_blog', args = [str(pk)]))
-
-
 @login_required
 def read_blog(request, id):
     blog = Blog.objects.get(id = id)
@@ -115,7 +98,7 @@ def edit_blog(request, id):
         blog.description = request.POST.get('blogcontent')
         blog.image = request.POST.get('imagelink')
         blog.save()
-        return redirect('/')
+        return redirect('home:read_blog', id = id)
 
 
 @login_required
