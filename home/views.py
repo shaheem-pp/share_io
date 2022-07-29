@@ -1,21 +1,28 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.postgres.search import SearchVector
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
 from home.models import *
 import datetime
+from django.contrib.postgres.search import SearchVector
 
 
 # Create your views here.
 @login_required
 def index(request):
+    user = request.user
+    profile = User.objects.get(username = user)
     if request.method == "GET":
         data = request.user.id
+        # user = request.user
         blogs = Blog.objects.all().order_by('-date')
         title = {
                 "title": "Shareio | Home",
                 "data": data,
-                "blogs": blogs
+                "blogs": blogs,
+                "profile": profile
+
         }
         return render(request, "home/index.html", title)
     return redirect('/user/login')
@@ -43,31 +50,51 @@ def new_blog(request):
 
 
 @login_required
-def liked(request, pk):
-    post = get_object_or_404(Blog, id = request.POST.get('post_id'))
-    liked = False
-    if post.likes.filter(id = request.user.id).exists():
-        post.likes.remove(request.user)
-        liked = False
-    else:
-        post.likes.add(request.user)
-        liked = True
-    return HttpResponseRedirect(reverse('read_blog', args = [str(pk)]))
+def like_unlike_post(request):
+    user = request.user
+    if request.method == 'POST':
+        post_id = request.POST.get('post_id')
+        post_obj = Blog.objects.get(id = post_id)
+        profile = User.objects.get(username = user)
+        if profile in post_obj.likes.all():
+            post_obj.likes.remove(profile)
+        else:
+            post_obj.likes.add(profile)
+        like, created = Like.objects.get_or_create(user = profile, post_id = post_id)
+        if not created:
+            if like.value == 'Like':
+                like.value = 'Unlike'
+            else:
+                like.value = 'Like'
+        else:
+            like.value = 'Like'
+            post_obj.save()
+            like.save()
+    return redirect('home:index')
+
+
+# @login_required
+# def liked(request, pk):
+#     post = get_object_or_404(Blog, id = request.POST.get('post_id'))
+#     liked = False
+#     if post.likes.filter(id = request.user.id).exists():
+#         post.likes.remove(request.user)
+#         liked = False
+#     else:
+#         post.likes.add(request.user)
+#         liked = True
+#     return HttpResponseRedirect(reverse('read_blog', args = [str(pk)]))
 
 
 @login_required
 def read_blog(request, id):
     blog = Blog.objects.get(id = id)
     blog_likes = blog.total_likes()
-    liked = False
-    if blog.likes.filter(id = request.user.id).exists():
-        liked = True
-        blog_likes = blog_likes - 1
     context = {
             "blog": blog,
             "title": "Shareio | " + blog.title,
             "blog_likes": blog_likes,
-            "is_liked": liked
+            "profile": User.objects.get(username = request.user)
     }
     return render(request, "home/read_blog.html", context)
 
@@ -102,6 +129,7 @@ def search(request):
     if request.POST.get('keyword') == "":
         return redirect('login')
     else:
-        blogs = Blog.objects.filter(description__contains = request.POST.get('keyword')) or \
-                Blog.objects.filter(title__contains = request.POST.get('keyword'))
+        blogs = Blog.objects.annotate(search = SearchVector('description', 'short', 'name', 'title',
+                                                            'userid', 'userid__first_name')).filter(
+                search = request.POST.get('keyword'))
         return render(request, "home/index.html", {"blogs": blogs})

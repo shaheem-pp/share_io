@@ -9,11 +9,17 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <form class="form-inline ml-auto" method="post" action="/search/">
+            <form class="form-inline flex-fill" method="post" action="/search/">
                 {% csrf_token %}
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
-                       name="keyword">
-                <button class="btn btn-outline-pink my-2 my-sm-0" type="submit">Search</button>
+                <div class="input-group w-100">
+                    <input type="Enter a Keyword" class="form-control" placeholder="search" aria-label="search bar"
+                           name="keyword" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-pink" type="submit" id="button-addon2">
+                            <i class="fa fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
             </form>
             <ul class="navbar-nav">
                 <li class="nav-item p-3 m-1">
@@ -40,16 +46,26 @@
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="card-title">{{ blog.title }}</h5>
-                            <p class="card-text">{{ blog.short }}</p>
+                            <p class="card-text">{{ blog.short|convert_markdown|safe }}</p>
                             <p><a href="/read_blog/{{ blog.id }}" class="pink-color-link text-underline">
                                 <u>Read more</u></a></p>
-                            <p class="pink-color-link"><i class="fa fa-thumbs-up"></i> {{ blog.total_likes }}</p>
+                            <form action="{% url 'home:like-post-view' %}" method="POST" class='like-form' id='{{ blog.id }}'>
+                                {% csrf_token %}
+                                <input type="hidden" name="post_id" value={{ blog.id }}>
+                                <button type="submit" class="ui button like-btn{{ blog.id }} btn btn-pink">
+                                    {% if profile not in blog.likes.all %}
+                                        Like
+                                    {% else %}
+                                        Unlike
+                                    {% endif %}
+                                </button>
+                                <div class="like-count{{ blog.id }} d-inline"> {{ blog.total_likes }} </div>
+                                likes
+                            </form>
                             <br>
                             <hr>
                             <p class="card-text"><small class="text-muted">Created by {{ blog.name }} on
                                 {{ blog.date }}</small></p>
-                            {#                            <a href="/liked/{{ blog.id }}" class="btn btn-pink"><i class="fa fa-thumbs-up"></i>#}
-                            {#                                {{ blog.likes }}</a>#}
                         </div>
                     </div>
                 </div>
