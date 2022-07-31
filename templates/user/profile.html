@@ -29,34 +29,41 @@
         <h1 class="mt-5">Your Blogs</h1>
 
         <div class="container my-5">
-            {% for blog in blogs %}
-                <div class="blog-design mb-3">
-                    <div class="row no-gutters">
-                        <div class="col-md-4">
-                            <img class="card-img" src="{{ blog.image }}" alt="image_unavailable">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ blog.title }}</h5>
-                                <p><a href="/read_blog/{{ blog.id }}" class="pink-color-link text-underline">
-                                    <u>Read more</u></a></p>
-                                <p class="pink-color-link"><i class="fa fa-thumbs-up"></i> {{ blog.total_likes }}</p>
+            {% if blogs %}
+                {% for blog in blogs %}
+                    <div class="blog-design mb-3">
+                        <div class="row no-gutters">
+                            <div class="col-md-4">
+                                <img class="card-img" src="{{ blog.image }}" alt="image_unavailable">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ blog.title }}</h5>
+                                    <p><a href="/read_blog/{{ blog.id }}" class="pink-color-link text-underline">
+                                        <u>Read more</u></a></p>
+                                    <p class="pink-color-link"><i class="fa fa-thumbs-up"></i> {{ blog.total_likes }}
+                                    </p>
 
-                                <br>
-                                <hr>
-                                <p class="card-text"><small class="text-muted">Created on
-                                    {{ blog.date }}</small></p>
-                                <br>
-                                {#                                <p class="pink-color-link"><i class="fa fa-thumbs-up"></i> {{ blog.likes }}</p>#}
-                                <a href="/edit_blog/{{ blog.id }}" class="btn btn-pink"><i class="fa
+                                    <br>
+                                    <hr>
+                                    <p class="card-text"><small class="text-muted">Created on
+                                        {{ blog.date }}</small></p>
+                                    <br>
+                                    {#                                <p class="pink-color-link"><i class="fa fa-thumbs-up"></i> {{ blog.likes }}</p>#}
+                                    <a href="/edit_blog/{{ blog.id }}" class="btn btn-pink"><i class="fa
                                 fa-edit"></i> Edit</a>
-                                <a href="/delete_blog/{{ blog.id }}" class="btn btn-danger"><i class="fa
+                                    <a href="/delete_blog/{{ blog.id }}" class="btn btn-danger"><i class="fa
                                 fa-trash-can"></i> Delete Blog</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                <h1 class="display-1">No blogs yet</h1>
+                <a href="/new_blog/" class="pink-color-link"><i class="fa fa-pencil"></i> &emsp;Write a New
+                    Blog</a>
+            {% endif %}
         </div>
 
 

@@ -2,6 +2,16 @@
 {% load blog_extras %}
 {% block content %}
 
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <script>
+                    alert("{{ message }}")
+                </script>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand pl-2">Shareio <i class="fa fa-arrow-up-from-bracket"></i> </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -9,8 +19,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <form class="form-inline flex-fill  p-3 m-1" method="post" action="/search/">
-                {% csrf_token %}
+            <form class="form-inline flex-fill  p-3 m-1" method="get" action="/search/">
                 <div class="input-group w-100">
                     <input type="Enter a Keyword" class="form-control" placeholder="search" aria-label="search bar"
                            name="keyword" aria-describedby="button-addon2">
@@ -53,7 +62,7 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="post_id" value={{ blog.id }}>
                                 <button type="submit" class="ui button like-btn{{ blog.id }} btn btn-pink">
-                                    {% if profile not in blog.likes.all %}
+                                    {% if user not in blog.likes.all %}
                                         Like
                                     {% else %}
                                         Unlike

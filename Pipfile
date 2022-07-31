@@ -8,6 +8,7 @@ django = "*"
 markdown = "*"
 psycopg2 = "*"
 django-simple-search = "*"
+django-tinymce = "*"
 
 [dev-packages]
 

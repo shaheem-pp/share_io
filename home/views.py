@@ -1,23 +1,20 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from home.models import *
-import datetime
+from datetime import datetime
 from django.contrib.postgres.search import SearchVector
 
 
 # Create your views here.
 @login_required
 def index(request):
-    user = request.user
-    profile = User.objects.get(username = user)
     if request.method == "GET":
         data = request.user.id
         blogs = Blog.objects.all().order_by('-date')
         title = {
                 "title": "Shareio | Home",
                 "data": data,
-                "blogs": blogs,
-                "profile": profile
+                "blogs": blogs
 
         }
         return render(request, "home/index.html", title)
@@ -39,8 +36,9 @@ def new_blog(request):
         blogObj.description = request.POST.get('blogcontent')
         blogObj.image = request.POST.get('imagelink')
         blogObj.name = request.user.get_full_name()
-        x = datetime.datetime.now()
-        blogObj.date = x.strftime("%d %B %Y")
+        blogObj.date = datetime.now()
+        # x = datetime.datetime.now()
+        # blogObj.date = x.strftime("%d %B %Y")
         blogObj.save()
         return redirect('/')
 
@@ -109,10 +107,10 @@ def delete_blog(request, id):
 
 
 def search(request):
-    if request.POST.get('keyword') == "":
+    if request.GET['keyword'] == "":
         return redirect('login')
     else:
         blogs = Blog.objects.annotate(search = SearchVector('description', 'short', 'name', 'title',
                                                             'userid', 'userid__first_name')).filter(
-                search = request.POST.get('keyword'))
+                search = request.GET['keyword'])
         return render(request, "home/index.html", {"blogs": blogs})

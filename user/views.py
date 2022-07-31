@@ -4,7 +4,6 @@ from django.contrib import auth, messages
 from home.models import *
 
 
-# Create your views here.
 @login_required
 def profile(request):
     if request.method == 'GET':
@@ -56,7 +55,11 @@ def signup(request):
                 password = request.POST.get('password1'))
         user.save()
         messages.success(request, 'User Created!')
-        return redirect('/user/login')
+        user = auth.authenticate(request, username = request.POST.get('username'),
+                                 password = request.POST.get('password1'))
+        request.session['username'] = request.POST.get('username')
+        auth.login(request, user)
+        return redirect('/')
 
 
 @login_required
@@ -80,5 +83,5 @@ def change_password(request, id):
             # print("password changed successfully")
             return redirect('/user/')
         else:
-            # print("wrong pass")
+            messages.success(request, 'Wrong Password!')
             return redirect('/user/')

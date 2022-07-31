@@ -39,7 +39,8 @@ INSTALLED_APPS = [
         # 'home.apps.HomeConfig',
         # 'user.apps.UserappConfig'
         'home',
-        'user'
+        'user',
+        # 'tinymce'
 ]
 
 MIDDLEWARE = [

@@ -10,7 +10,7 @@ class Blog(models.Model):
     description = models.CharField(max_length = 10000)
     name = models.CharField(max_length = 10000)
     image = models.CharField(max_length = 1000)
-    date = models.CharField(max_length = 100)
+    date = models.DateTimeField()
     likes = models.ManyToManyField(User, related_name = "blog_post")
 
     def total_likes(self):
