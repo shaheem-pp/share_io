@@ -2,7 +2,7 @@
 {% block content %}
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand pl-2">Shareio <i class="fa fa-arrow-up-from-bracket"></i> </a>
+        <a class="navbar-brand pl-2" href="/">Shareio <i class="fa fa-arrow-up-from-bracket"></i> </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -19,7 +19,8 @@
     <div class="container">
 
         <h1 class="text-center my-5">Write a New Blog</h1>
-        <form method="post" action="/new_blog/" class="w-100">
+        <form method="post" action="/new_blog/" class="w-100" enctype="multipart/form-data">
+
             {% csrf_token %}
             <div class="form-group">
                 <label for="title">Title</label>
@@ -37,7 +38,7 @@
             </div>
             <div class="form-group">
                 <label for="imagelink">Image Link</label>
-                <input type="url" class="form-control" id="imagelink" name="imagelink">
+                <input type="file" class="form-control" id="imagelink" name="imagelink">
             </div>
             <button type="submit" class="btn btn-pink btn-block my-5">Submit</button>
         </form>

@@ -9,7 +9,7 @@ def profile(request):
     if request.method == 'GET':
         userid = request.user.id
         data = User.objects.get(id = userid)
-        blogObj = Blog.objects.filter(userid = userid).order_by('-id')
+        blogObj = Blog.objects.filter(userid = userid).order_by('-date')
         context = {
                 "title": "Shareio | Home",
                 "data": data,

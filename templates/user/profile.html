@@ -4,7 +4,7 @@
 {% block content %}
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand pl-2">Shareio <i class="fa fa-arrow-up-from-bracket"></i> </a>
+        <a class="navbar-brand pl-2" href="/">Shareio <i class="fa fa-arrow-up-from-bracket"></i> </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -39,21 +39,20 @@
                             <div class="col-md-8">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ blog.title }}</h5>
+                                    <p class="card-text">{{ blog.short|convert_markdown|safe }}</p>
                                     <p><a href="/read_blog/{{ blog.id }}" class="pink-color-link text-underline">
                                         <u>Read more</u></a></p>
-                                    <p class="pink-color-link"><i class="fa fa-thumbs-up"></i> {{ blog.total_likes }}
-                                    </p>
-
+                                    <form class=" d-inline" action="/like/{{ blog.id }}" method="post">
+                                        {% csrf_token %}
+                                        <button class="btn btn-pink" type="submit">
+                                            <i class="fa fa-thumbs-up"></i> Like
+                                        </button>
+                                    </form>
+                                    <p class="d-inline">{{ like_count }} likes</p>
                                     <br>
                                     <hr>
-                                    <p class="card-text"><small class="text-muted">Created on
+                                    <p class="card-text"><small class="text-muted">Created by {{ blog.name }} on
                                         {{ blog.date }}</small></p>
-                                    <br>
-                                    {#                                <p class="pink-color-link"><i class="fa fa-thumbs-up"></i> {{ blog.likes }}</p>#}
-                                    <a href="/edit_blog/{{ blog.id }}" class="btn btn-pink"><i class="fa
-                                fa-edit"></i> Edit</a>
-                                    <a href="/delete_blog/{{ blog.id }}" class="btn btn-danger"><i class="fa
-                                fa-trash-can"></i> Delete Blog</a>
                                 </div>
                             </div>
                         </div>

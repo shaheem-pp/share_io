@@ -1,4 +1,7 @@
+import json
+
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from home.models import *
 from datetime import datetime
@@ -11,11 +14,21 @@ def index(request):
     if request.method == "GET":
         data = request.user.id
         blogs = Blog.objects.all().order_by('-date')
+        likes = Like.objects.all()
+        for blog in blogs:
+            blog.liked_count = 0
+            blog.is_liked = False
+            for like in likes:
+                if blog.id == like.post_id:
+                    blog.liked_count += 1
+                    if request.user.id == like.user_id:
+                        blog.is_liked = True
+                    # blog.liked_count = Like.objects.filter(post_id = blog.id).count()
+                    # blog.is_liked = Like.objects.filter(user = request.user, post_id = blog.id).exists()
         title = {
                 "title": "Shareio | Home",
                 "data": data,
-                "blogs": blogs
-
+                "blogs": blogs,
         }
         return render(request, "home/index.html", title)
     return redirect('/user/login')
@@ -34,48 +47,40 @@ def new_blog(request):
         blogObj.title = request.POST.get('title')
         blogObj.short = request.POST.get('short')
         blogObj.description = request.POST.get('blogcontent')
-        blogObj.image = request.POST.get('imagelink')
+        blogObj.image = request.FILES.get('imagelink')
         blogObj.name = request.user.get_full_name()
         blogObj.date = datetime.now()
-        # x = datetime.datetime.now()
-        # blogObj.date = x.strftime("%d %B %Y")
         blogObj.save()
         return redirect('/')
 
 
 @login_required
-def like_unlike_post(request):
+def like(request):
     user = request.user
-    if request.method == 'POST':
-        post_id = request.POST.get('post_id')
-        post_obj = Blog.objects.get(id = post_id)
-        profile = User.objects.get(username = user)
-        if profile in post_obj.likes.all():
-            post_obj.likes.remove(profile)
-        else:
-            post_obj.likes.add(profile)
-        like, created = Like.objects.get_or_create(user = profile, post_id = post_id)
-        if not created:
-            if like.value == 'Like':
-                like.value = 'Unlike'
-            else:
-                like.value = 'Like'
-        else:
-            like.value = 'Like'
-            post_obj.save()
-            like.save()
-    return redirect('home:index')
+    id = request.POST.get("blogId", None)
+    if Like.objects.filter(user = user, post_id = id).exists():
+        Like.objects.get(user = user, post_id = id).delete()
+        liked = False
+    else:
+        Like.objects.create(user = user, post_id = id)
+        liked = True
+    like_count = Like.objects.filter(post_id = id).count()
+    ctx = {
+            "liked": liked,
+            "like_count": like_count
+    }
+    return JsonResponse(ctx, safe = False)
 
 
 @login_required
 def read_blog(request, id):
     blog = Blog.objects.get(id = id)
-    blog_likes = blog.total_likes()
     context = {
             "blog": blog,
             "title": "Shareio | " + blog.title,
-            "blog_likes": blog_likes,
-            "profile": User.objects.get(username = request.user)
+            "profile": User.objects.get(username = request.user),
+            "like_count": Like.objects.filter(post_id = id).count(),
+            "is_liked": Like.objects.filter(user = request.user, post_id = blog.id).exists(),
     }
     return render(request, "home/read_blog.html", context)
 

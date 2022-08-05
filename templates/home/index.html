@@ -13,7 +13,7 @@
     {% endif %}
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand pl-2">Shareio <i class="fa fa-arrow-up-from-bracket"></i> </a>
+        <a class="navbar-brand pl-2" href="/">Shareio <i class="fa fa-arrow-up-from-bracket"></i> </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -45,12 +45,12 @@
     </nav>
 
     <div class="container my-5">
+        {% csrf_token %}
         {% for blog in blogs %}
-            {#            <div class="blog-design">#}
             <div class="blog-design mb-3">
                 <div class="row no-gutters">
                     <div class="col-md-4">
-                        <img class="card-img" src="{{ blog.image }}" alt="image_unavailable">
+                        <img class="card-img" src="{{ blog.image.url }}" alt="image_unavailable">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -58,19 +58,16 @@
                             <p class="card-text">{{ blog.short|convert_markdown|safe }}</p>
                             <p><a href="/read_blog/{{ blog.id }}" class="pink-color-link text-underline">
                                 <u>Read more</u></a></p>
-                            <form action="{% url 'home:like-post-view' %}" method="POST" class='like-form' id='{{ blog.id }}'>
-                                {% csrf_token %}
-                                <input type="hidden" name="post_id" value={{ blog.id }}>
-                                <button type="submit" class="ui button like-btn{{ blog.id }} btn btn-pink">
-                                    {% if user not in blog.likes.all %}
-                                        Like
-                                    {% else %}
-                                        Unlike
-                                    {% endif %}
+                            {% if blog.is_liked %}
+                                <button id="like-btn-{{ blog.id }}" class="btn btn-pink" onclick="liked({{ blog.id }})">
+                                    <i class="fa fa-thumbs-up"></i> Like
                                 </button>
-                                <div class="like-count{{ blog.id }} d-inline"> {{ blog.total_likes }} </div>
-                                likes
-                            </form>
+                            {% else %}
+                                <button id="like-btn-{{ blog.id }}" class="btn btn-pink" onclick="liked({{ blog.id }})">
+                                    <i class="fa fa-thumbs-up"></i> unlike
+                                </button>
+                            {% endif %}
+                            <p id="like-count-{{ blog.id }}" class="d-inline">{{ blog.liked_count }} likes</p>
                             <br>
                             <hr>
                             <p class="card-text"><small class="text-muted">Created by {{ blog.name }} on

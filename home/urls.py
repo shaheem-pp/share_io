@@ -11,5 +11,5 @@ urlpatterns = [
         path('edit_blog/<int:id>', views.edit_blog, name = "edit_blog"),
         path('delete_blog/<int:id>', views.delete_blog, name = "delete_blog"),
         path('search/', views.search, name = "search"),
-        path('liked/', views.like_unlike_post, name = 'like-post-view'),
+        path('like/', views.like, name = 'like'),
 ]
