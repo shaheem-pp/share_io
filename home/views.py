@@ -1,5 +1,6 @@
 import json
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
@@ -49,6 +50,7 @@ def new_blog(request):
         blogObj.name = request.user.get_full_name()
         blogObj.date = datetime.now()
         blogObj.save()
+        messages.success(request, 'Blog Created!')
         return redirect('/')
 
 
@@ -85,7 +87,8 @@ def read_blog(request, id):
 
 @login_required
 def edit_blog(request, id):
-    if request.method == "GET":
+    blog = Blog.objects.get(id = id)
+    if request.method == "GET" and request.user == blog.userid :
         blog = Blog.objects.get(id = id)
         context = {
                 "title": "Edit Blog | " + blog.title,
@@ -93,19 +96,26 @@ def edit_blog(request, id):
         }
         return render(request, "home/edit_blog.html", context)
     if request.method == "POST":
-        blog = Blog.objects.get(id = id)
         blog.title = request.POST.get('title')
         blog.short = request.POST.get('short')
         blog.description = request.POST.get('blogcontent')
         blog.image = request.POST.get('imagelink')
         blog.save()
+        messages.success(request, 'Blog edited!')
         return redirect('home:read_blog', id = id)
+    messages.error(request, 'Not authenticated to edit!')
+    return redirect('/user/')
 
 
 @login_required
 def delete_blog(request, id):
     blog = Blog.objects.get(id = id)
-    blog.delete()
+    if request.user == blog.userid :
+
+        blog.delete()
+        messages.success(request, 'Blog deleted!')
+        return redirect('/user/')
+    messages.error(request, 'Not authenticated to delete!')
     return redirect('/user/')
 
 

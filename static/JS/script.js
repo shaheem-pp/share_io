@@ -19,35 +19,6 @@ function liked(blogId) {
     })
 }
 
-
-// $('.likin').click(function () {
-//     const post_id = $(this).attr('id')
-//     console.log(post_id)
-//     $.ajax({
-//         type: 'POST',
-//         url: "{% url 'like' %}",
-//         data: {
-//             'content_id': $(this).attr('name'),
-//             'operation': 'like_submit',
-//             'csrfmiddlewaretoken': '{{ csrf_token }}'
-//         },
-//         dataType: "json",
-//         success: function (response) {
-//             selector = document.getElementsByName(response.content_id);
-//             // data: {
-//             //     'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
-//             //     'post_id': post_id,
-//             // },
-//             // success: function (response) {
-//             if (response.liked == true) {
-//                 $().css("color", "blue");
-//             } else if (response.liked == false) {
-//                 $(selector).css("color", "black");
-//             }
-//         }
-//         ,
-//         error: function (response) {
-//
-//         }
-//     })
-// })
+function deleteConfirm(){
+    return confirm('Are you sure you want to delete this?');
+}

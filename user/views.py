@@ -91,3 +91,7 @@ def change_password(request, id):
         else:
             messages.error(request, 'Wrong Password!')
             return redirect('/user/')
+
+
+def reset(request):
+    pass
