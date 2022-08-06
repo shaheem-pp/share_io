@@ -34,7 +34,7 @@
                     <div class="blog-design mb-3">
                         <div class="row no-gutters">
                             <div class="col-md-4">
-                                <img class="card-img" src="{{ blog.image }}" alt="image_unavailable">
+                                <img class="card-img" src="{{ blog.image.url }}" alt="image_unavailable">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
@@ -42,14 +42,15 @@
                                     <p class="card-text">{{ blog.short|convert_markdown|safe }}</p>
                                     <p><a href="/read_blog/{{ blog.id }}" class="pink-color-link text-underline">
                                         <u>Read more</u></a></p>
-                                    <form class=" d-inline" action="/like/{{ blog.id }}" method="post">
-                                        {% csrf_token %}
-                                        <button class="btn btn-pink" type="submit">
-                                            <i class="fa fa-thumbs-up"></i> Like
-                                        </button>
-                                    </form>
-                                    <p class="d-inline">{{ like_count }} likes</p>
+                                    <p class="d-inline pink-color-link">{{ blog.liked_count }} likes</p>
                                     <br>
+                                    <br>
+                                    <a href="/edit_blog/{{ blog.id }}" class="btn btn-pink">
+                                        <i class="fa fa-pen-to-square"></i> Edit
+                                    </a>
+                                    <a href="/delete_blog/{{ blog.id }}" class="btn btn-danger">
+                                        <i class="fa fa-trash-can"></i> Delete
+                                    </a>
                                     <hr>
                                     <p class="card-text"><small class="text-muted">Created by {{ blog.name }} on
                                         {{ blog.date }}</small></p>

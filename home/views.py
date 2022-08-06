@@ -21,8 +21,6 @@ def index(request):
             for like in likes:
                 if blog.id == like.post_id:
                     blog.liked_count += 1
-                    if request.user.id == like.user_id:
-                        blog.is_liked = True
                     # blog.liked_count = Like.objects.filter(post_id = blog.id).count()
                     # blog.is_liked = Like.objects.filter(user = request.user, post_id = blog.id).exists()
         title = {

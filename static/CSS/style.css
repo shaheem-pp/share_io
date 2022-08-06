@@ -98,7 +98,8 @@ th, td {
 }
 
 .card-img {
-    width: 100%;
+    height: 20rem;
+    object-fit: contain;
 }
 
 input[type=search]::-webkit-search-cancel-button {

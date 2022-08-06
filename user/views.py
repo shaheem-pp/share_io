@@ -10,6 +10,12 @@ def profile(request):
         userid = request.user.id
         data = User.objects.get(id = userid)
         blogObj = Blog.objects.filter(userid = userid).order_by('-date')
+        likes = Like.objects.all()
+        for blog in blogObj:
+            blog.liked_count = 0
+            for like in likes:
+                if blog.id == like.post_id:
+                    blog.liked_count += 1
         context = {
                 "title": "Shareio | Home",
                 "data": data,
@@ -35,7 +41,7 @@ def login(request):
             auth.login(request, user)
             return redirect('/')
         else:
-            messages.success(request, 'User Not Found!')
+            messages.error(request, 'User Not Found!')
             return render(request, 'user/login.html', {'title': "Shareio Signin"})
 
 
@@ -83,5 +89,5 @@ def change_password(request, id):
             # print("password changed successfully")
             return redirect('/user/')
         else:
-            messages.success(request, 'Wrong Password!')
+            messages.error(request, 'Wrong Password!')
             return redirect('/user/')

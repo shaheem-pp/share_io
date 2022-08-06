@@ -19,7 +19,7 @@
     <div class="container">
 
         <h1 class="text-center my-5">Edit Blog</h1>
-        <form method="post" action="/edit_blog/{{ blog.id }}" class="w-100">
+        <form method="post" action="/edit_blog/{{ blog.id }}" class="w-100" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
                 <label for="title">Title</label>
@@ -37,7 +37,7 @@
             </div>
             <div class="form-group">
                 <label for="imagelink">Image Link</label>
-                <input type="url" class="form-control" id="imagelink" name="imagelink" value="{{ blog.image }}">
+                <input type="file" class="form-control" id="imagelink" name="imagelink" value="{{ blog.image.url }}">
             </div>
             <button type="submit" class="btn btn-pink btn-block my-5">Submit</button>
         </form>
